@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>My Custom ChatGPT-4</title>
+  <title>My Custom ChatGPT-4 (Testing Mode)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -21,10 +21,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    #apiKeyInput {
-      width: 260px;
-      padding: 6px;
     }
     #chat {
       flex: 1;
@@ -72,8 +68,7 @@
 
 <body>
   <div id="topbar">
-    <div>My Custom ChatGPT-4</div>
-    <input id="apiKeyInput" type="password" placeholder="Enter OpenAI API Key" />
+    <div>My Custom ChatGPT-4 (Testing Mode)</div>
   </div>
 
   <div id="chat"></div>
@@ -84,10 +79,13 @@
   </div>
 
   <script>
-    // Load memory from browser storage.
+    // ⚠️ WARNING: This is NOT safe for production
+    const OPENAI_API_KEY = "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";
+
+    // Persistent memory stored in browser
     let memory = JSON.parse(localStorage.getItem("chat_memory") || "[]");
 
-    // Render previous messages.
+    // Show previous messages
     memory.forEach(m => displayMessage(m.content, m.role));
 
     function saveMemory() {
@@ -95,23 +93,13 @@
     }
 
     async function sendMessage() {
-      const apiKey = document.getElementById("apiKeyInput").value.trim();
       const input = document.getElementById("userInput");
       const text = input.value.trim();
-
       if (!text) return;
-      if (!apiKey) {
-        alert("Please enter your OpenAI API key.");
-        return;
-      }
 
-      // Show user message
       displayMessage(text, "user");
-
-      // Add user message to memory
       memory.push({ role: "user", content: text });
       saveMemory();
-
       input.value = "";
 
       try {
@@ -119,22 +107,19 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + apiKey
+            Authorization: "Bearer " + OPENAI_API_KEY
           },
           body: JSON.stringify({
-            model: "gpt-4o",   // ChatGPT-4 model
-            messages: memory   // full memory for persistent context
+            model: "gpt-4o",  // ChatGPT-4 model
+            messages: memory
           })
         });
 
         const data = await response.json();
-
         const reply = data.choices?.[0]?.message?.content || "(No response)";
 
-        // Display reply
         displayMessage(reply, "assistant");
 
-        // Save to memory
         memory.push({ role: "assistant", content: reply });
         saveMemory();
 
