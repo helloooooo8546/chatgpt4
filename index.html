@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>My Custom ChatGPT-4 (Testing Mode)</title>
+  <title>My Custom ChatGPT (4o-mini)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -68,7 +68,7 @@
 
 <body>
   <div id="topbar">
-    <div>My Custom ChatGPT-4 (Testing Mode)</div>
+    <div>My Custom ChatGPT (4o-mini)</div>
   </div>
 
   <div id="chat"></div>
@@ -79,13 +79,13 @@
   </div>
 
   <script>
-    // ⚠️ WARNING: This is NOT safe for production
+    // ⚠️ WARNING: Not safe for production
     const OPENAI_API_KEY = "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";
 
-    // Persistent memory stored in browser
+    // Persistent memory stored in user's browser
     let memory = JSON.parse(localStorage.getItem("chat_memory") || "[]");
 
-    // Show previous messages
+    // Display previous memory messages
     memory.forEach(m => displayMessage(m.content, m.role));
 
     function saveMemory() {
@@ -95,11 +95,13 @@
     async function sendMessage() {
       const input = document.getElementById("userInput");
       const text = input.value.trim();
+
       if (!text) return;
 
       displayMessage(text, "user");
       memory.push({ role: "user", content: text });
       saveMemory();
+
       input.value = "";
 
       try {
@@ -110,7 +112,7 @@
             Authorization: "Bearer " + OPENAI_API_KEY
           },
           body: JSON.stringify({
-            model: "gpt-4o",  // ChatGPT-4 model
+            model: "gpt-4o-mini",
             messages: memory
           })
         });
